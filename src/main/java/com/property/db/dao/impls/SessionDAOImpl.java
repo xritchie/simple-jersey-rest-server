@@ -116,7 +116,7 @@ public class SessionDAOImpl
 		        .createQuery
 		        (
 	        		"UPDATE Session AS S " + 
-					"SET S.active = 0, S.closedOn = NOW(), S.logoutType = :logoutType " +
+					"SET S.active = 0, S.closedOn = UNIX_TIMESTAMP(NOW()), S.logoutType = :logoutType " +
 					"WHERE S.accountId = :accountId AND (S.active = 1 OR S.closedOn IS NULL)"
 				);
 		queryupdate.setString("logoutType", SessionLogoutType.LOGIN.toString().toUpperCase());

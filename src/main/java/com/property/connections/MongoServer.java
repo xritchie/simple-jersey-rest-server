@@ -14,6 +14,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
+import com.property.utility.SpringPropertiesUtil;
 
 @Component("mongoServer")
 @Qualifier("default")
@@ -59,6 +60,7 @@ public class MongoServer {
 
 	public DB getDB(String database) throws MongoException, UnknownHostException {
 		DB db = this.getConnection().getDB(database);
+		//TODO:: AUTHENTICATE FROM CONFIG
 		boolean auth = db.authenticate("root", "root".toCharArray());
 		if (!auth)
 			throw new MongoException("MongoServer: Internal System Error");
@@ -101,13 +103,22 @@ public class MongoServer {
 			return null;
 		}
 	}
+	
+	private static String getMongoHost()
+	{
+		return SpringPropertiesUtil.getProperty("mongo-host");
+	}
+	
+	private static int getMongoPort()
+	{
+		return Integer.parseInt(SpringPropertiesUtil.getProperty("mongo-port"));
+	}
 
 	
 	public void createMongoInstance() throws UnknownHostException
 	{
-		//TODO:: Get Instance from config file
 		if (connection == null)
-			connection = new MongoClient( "192.168.2.108" , 27017 );
+			connection = new MongoClient(getMongoHost(), getMongoPort());
 	}
 	
 	public void createMorphiaInstance()
